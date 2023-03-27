@@ -219,23 +219,10 @@ window.addEventListener('DOMContentLoaded', function() {
     };
 
     forms.forEach(item => {
-        bindpostData(item);
+        postData(item);
     });
 
-    const postData = async (url, data)=>{
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body:data
-        });
-
-        return await res.json();
-
-    };
-
-    function bindpostData(form) {
+    function postData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -253,11 +240,14 @@ window.addEventListener('DOMContentLoaded', function() {
             formData.forEach(function(value, key){
                 object[key] = value;
             });
-            
 
-         
-            postData('http://localhost:3000/requests', JSON.stringify(object))
-            .then(data=>{
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            }).then(data => {
                 console.log(data);
                 showThanksModal(message.success);
                 statusMessage.remove();
@@ -291,32 +281,4 @@ window.addEventListener('DOMContentLoaded', function() {
             closeModal();
         }, 4000);
     }
-
-
-fetch('http://localhost:3000/menu')
-   .then(data => data.json())
-   .then(res => console.log(res));
-
 });
-
-
-const urlObj = {
-    protocol: 'https',
-    domain: 'mysite.com'
-};
- 
-function showCurrentURL() {
-    const extractCurrDomain = () => {
-        return this.domain;
-    };
-    const extractCurrProtocol = () => {
-        return this.protocol;
-    };
- 
-    console.log(`${extractCurrProtocol()}://${extractCurrDomain()}`);
-}
- 
-const url = showCurrentURL.bind(urlObj);
- 
-console.log(url);
-
